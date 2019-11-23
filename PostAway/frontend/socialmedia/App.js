@@ -32,6 +32,7 @@ export default class App extends Component {
     this.getPosts();
   }
   getPosts = async () => {
+    let errorReceived = false;
     await axios
       .get(getPostsByDateOrderUrl)
       .then(res => {
@@ -40,6 +41,13 @@ export default class App extends Component {
       .catch(err => {
         console.log(err);
         this.showToast('Connection Error');
+        errorReceived = true;
+      })
+      .finally(() => {
+        if (errorReceived === true) {
+          this.showToast('Please hold while we establish connection.');
+          this.getPosts();
+        }
       });
   };
   postPostToDatabase = () => {
